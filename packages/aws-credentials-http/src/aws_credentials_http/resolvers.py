@@ -83,10 +83,12 @@ class ContainerCredentialsResolver(
 
     async def _resolve_uri_from_env(self) -> URI:
         if self.ENV_VAR in os.environ:
+            parsed = urlparse(os.environ[self.ENV_VAR])
             return URI(
                 scheme="http",
                 host=_CONTAINER_METADATA_IP,
-                path=os.environ[self.ENV_VAR],
+                path=parsed.path,
+                query=parsed.query or None,
             )
         elif self.ENV_VAR_FULL in os.environ:
             parsed = urlparse(os.environ[self.ENV_VAR_FULL])
